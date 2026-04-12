@@ -10,13 +10,13 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
-load_dotenv()
-
 from gmail_reader import read_todays_newsletters
 from summarizer import summarize_newsletters
 
 
 def main():
+    load_dotenv()
+
     print("🚀 AI News Web Generator gestartet...")
     print("=" * 50)
 
@@ -45,12 +45,12 @@ def main():
             print(f"❌ Zusammenfassung fehlgeschlagen: {e}")
             sys.exit(1)
 
-    # Telegram-Header entfernen (endet mit ─-Linie)
-    if "─" in summary_text:
-        separator_idx = summary_text.index("─")
-        # Find end of separator line
-        end_idx = summary_text.index("\n", separator_idx)
-        summary_text = summary_text[end_idx:].strip()
+        # Telegram-Header entfernen (endet mit ─-Linie)
+        TELEGRAM_SEPARATOR = "─" * 30
+        if TELEGRAM_SEPARATOR in summary_text:
+            after_sep = summary_text.index(TELEGRAM_SEPARATOR) + len(TELEGRAM_SEPARATOR)
+            summary_text = summary_text[after_sep:].strip()
+            print("   ✅ Telegram-Header entfernt")
 
     # Schritt 3: JSON schreiben
     print("\n💾 Schritt 3: JSON schreiben...")
@@ -60,7 +60,7 @@ def main():
         "generated_at": now_mez.isoformat(),
         "sources": sources,
         "summary": summary_text,
-        "newsletter_count": len(newsletters) if newsletters else 0,
+        "newsletter_count": len(newsletters),
     }
 
     os.makedirs("docs/data", exist_ok=True)
