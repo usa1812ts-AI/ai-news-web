@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+
+# Gmail OAuth – NIEMALS ins Repo!
+token.json
+credentials.json
+
+# macOS
+.DS_Store
+
+# Superpowers Brainstorming
+.superpowers/
