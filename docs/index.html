@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI News">
+  <meta name="theme-color" content="#2D362E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <title>AI News Briefing</title>
+  <style>
+    /* T.S. Corporate Design — Variablen */
+    :root {
+      --olive:       #2D362E;
+      --olive-dark:  #3D4A3E;
+      --orange:      #D97706;
+      --white:       #FFFFFF;
+      --gray-text:   #4B5563;
+      --gray-subtle: #9CA3AF;
+      --gray-light:  #F3F4F6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Liberation Sans', Arial, sans-serif;
+      background: var(--olive);
+      color: var(--white);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── PIN SCREEN ── */
+    #pin-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    .logo-badge {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--olive);
+      border: 3px solid var(--orange);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    #pin-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+
+    #pin-subtitle {
+      color: var(--gray-subtle);
+      font-size: 13px;
+      margin-bottom: 32px;
+      text-align: center;
+      max-width: 240px;
+    }
+
+    .pin-dots { display: flex; gap: 16px; margin-bottom: 32px; }
+
+    .pin-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--orange);
+      background: transparent;
+      transition: background 0.1s;
+    }
+    .pin-dot.filled { background: var(--orange); }
+
+    .pin-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 210px;
+    }
+
+    .pin-key {
+      background: var(--olive-dark);
+      border: none; border-radius: 10px;
+      padding: 16px;
+      color: var(--white);
+      font-size: 22px; font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pin-key:active { background: var(--orange); }
+    .pin-key.delete { font-size: 16px; }
+    .pin-key.empty { background: transparent; cursor: default; }
+
+    #pin-error {
+      color: #EF4444;
+      font-size: 12px;
+      margin-top: 16px;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    /* ── APP SCREEN ── */
+    #app-screen { display: none; }
+
+    .app-header {
+      background: var(--olive);
+      padding: 14px 20px;
+      border-bottom: 2px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 12px; }
+
+    .header-badge {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--olive); border: 2px solid var(--orange);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+
+    .header-title { font-size: 15px; font-weight: 700; }
+    .header-sub { color: var(--gray-subtle); font-size: 10px; margin-top: 1px; }
+
+    .badge-privat {
+      background: var(--orange); color: var(--white);
+      font-size: 9px; font-weight: 700;
+      padding: 3px 9px; border-radius: 10px;
+    }
+
+    .meta-bar {
+      background: var(--olive-dark);
+      padding: 8px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 4px;
+    }
+    .meta-bar span { color: var(--gray-light); font-size: 10px; }
+
+    .content { padding: 20px; max-width: 680px; margin: 0 auto; }
+
+    .section-label {
+      color: var(--orange);
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 14px;
+    }
+
+    #summary-text {
+      color: var(--gray-light);
+      font-size: 14px; line-height: 1.85;
+      white-space: pre-wrap;
+    }
+
+    /* Praxis-Tipp Hervorhebung */
+    .tip-box {
+      background: var(--olive-dark);
+      border-left: 3px solid var(--orange);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-top: 18px;
+      font-size: 13px; line-height: 1.6;
+      color: var(--gray-light);
+    }
+
+    .generate-btn {
+      display: block; width: 100%;
+      background: var(--orange); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 15px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      margin-top: 28px;
+      transition: opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .generate-btn:hover { opacity: 0.9; }
+    .generate-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── LOADING SCREEN ── */
+    #loading-screen {
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 60vh; padding: 40px;
+    }
+
+    .spinner {
+      width: 52px; height: 52px;
+      border: 3px solid var(--olive-dark);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #loading-text {
+      color: var(--gray-subtle); font-size: 14px;
+      text-align: center; line-height: 1.7;
+    }
+
+    /* ── TOKEN MODAL ── */
+    #token-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100; align-items: center;
+      justify-content: center; padding: 20px;
+    }
+    #token-modal.visible { display: flex; }
+
+    .modal-box {
+      background: var(--olive-dark); border-radius: 14px;
+      padding: 26px; width: 100%; max-width: 420px;
+      border: 1px solid var(--orange);
+    }
+    .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .modal-text {
+      color: var(--gray-subtle); font-size: 12px;
+      line-height: 1.7; margin-bottom: 16px;
+    }
+    .modal-text a { color: var(--orange); }
+    .modal-input {
+      width: 100%; background: var(--olive);
+      border: 1px solid var(--orange); border-radius: 6px;
+      padding: 10px 12px; color: var(--white);
+      font-size: 12px; font-family: monospace;
+      margin-bottom: 12px;
+    }
+    .modal-btn {
+      background: var(--orange); color: var(--white);
+      border: none; border-radius: 6px;
+      padding: 11px 20px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: inherit; width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Screen 1: PIN ── -->
+<div id="pin-screen">
+  <div class="logo-badge">T.S.</div>
+  <div id="pin-title">AI News Briefing</div>
+  <div id="pin-subtitle">Bitte PIN eingeben</div>
+  <div class="pin-dots" id="pin-dots">
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinInput('1')">1</button>
+    <button class="pin-key" onclick="pinInput('2')">2</button>
+    <button class="pin-key" onclick="pinInput('3')">3</button>
+    <button class="pin-key" onclick="pinInput('4')">4</button>
+    <button class="pin-key" onclick="pinInput('5')">5</button>
+    <button class="pin-key" onclick="pinInput('6')">6</button>
+    <button class="pin-key" onclick="pinInput('7')">7</button>
+    <button class="pin-key" onclick="pinInput('8')">8</button>
+    <button class="pin-key" onclick="pinInput('9')">9</button>
+    <button class="pin-key empty" disabled aria-hidden="true"></button>
+    <button class="pin-key" onclick="pinInput('0')">0</button>
+    <button class="pin-key delete" onclick="pinDelete()">⌫</button>
+  </div>
+  <div id="pin-error" role="alert"></div>
+</div>
+
+<!-- ── Screen 2: Hauptansicht ── -->
+<div id="app-screen">
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-badge">T.S.</div>
+      <div>
+        <div class="header-title">AI News Briefing</div>
+        <div class="header-sub">Sales Engineering | KAM</div>
+      </div>
+    </div>
+    <div class="badge-privat">PRIVAT</div>
+  </header>
+
+  <div class="meta-bar">
+    <span id="meta-date">Lädt...</span>
+    <span id="meta-sources"></span>
+  </div>
+
+  <!-- Screen 3: Ladeanimation (innerhalb App) -->
+  <div id="loading-screen">
+    <div class="spinner"></div>
+    <div id="loading-text">
+      Briefing wird generiert…<br>Das dauert ca. 45 Sekunden.
+    </div>
+  </div>
+
+  <div class="content" id="main-content">
+    <div class="section-label">AKTUELLES BRIEFING</div>
+    <div id="summary-text">Lädt…</div>
+    <button class="generate-btn" id="generate-btn" onclick="triggerGenerate()">
+      ⟳ Briefing neu generieren
+    </button>
+  </div>
+</div>
+
+<!-- ── GitHub Token Modal ── -->
+<div id="token-modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-title">🔑 GitHub Token eingeben</div>
+    <div class="modal-text">
+      Einmalig nötig für den manuellen Trigger. Token erstellen unter:<br>
+      github.com → Settings → Developer settings →
+      Personal access tokens → Fine-grained tokens<br><br>
+      Berechtigung: <strong>Actions → Read &amp; Write</strong><br>
+      Repository: <strong>ai-news-web</strong>
+    </div>
+    <input
+      class="modal-input"
+      type="password"
+      id="token-input"
+      placeholder="github_pat_..."
+      autocomplete="off"
+    >
+    <button class="modal-btn" onclick="saveToken()">Speichern &amp; Generieren</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
