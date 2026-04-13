@@ -8,29 +8,39 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def create_badge(size: int) -> Image.Image:
-    """Zeichnet den T.S.-Badge: Deep Olive Kreis + Orange Ring + weißer Text."""
+    """Zeichnet den T.S.-Badge: Deep Olive Quadrat + Orange Ring + weißer Text."""
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    # Deep Olive Hintergrundkreis
-    draw.ellipse([0, 0, size - 1, size - 1], fill="#2D362E")
+    # Deep Olive Hintergrund – volles Quadrat (iOS schneidet selbst ab)
+    draw.rectangle([0, 0, size - 1, size - 1], fill="#2D362E")
 
-    # Muted Orange Ring (außen)
-    ring = max(2, size // 30)
+    # Muted Orange Ring (innen, als Dekoration)
+    ring = max(4, size // 20)
+    pad = ring * 2
     draw.ellipse(
-        [ring, ring, size - 1 - ring, size - 1 - ring],
+        [pad, pad, size - 1 - pad, size - 1 - pad],
         outline="#D97706",
         width=ring,
     )
 
-    # T.S. Text (weiß, zentriert)
-    font_size = size // 4
-    font_path = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
-    try:
-        font = ImageFont.truetype(font_path, font_size)
-    except OSError:
-        # Fallback: Standard-Font
-        font = ImageFont.load_default()
+    # T.S. Text (weiß, zentriert, größer)
+    font_size = int(size * 0.42)
+    font_paths = [
+        "/Library/Fonts/Arial Bold.ttf",                                  # macOS
+        "/Library/Fonts/Arial Black.ttf",                                  # macOS Fallback
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",   # Linux
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",           # Linux Fallback
+    ]
+    font = None
+    for fp in font_paths:
+        try:
+            font = ImageFont.truetype(fp, font_size)
+            break
+        except OSError:
+            continue
+    if font is None:
+        font = ImageFont.load_default(size=font_size)
 
     bbox = draw.textbbox((0, 0), "T.S.", font=font)
     tw = bbox[2] - bbox[0]

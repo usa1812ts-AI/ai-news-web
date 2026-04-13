@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ts-news-v1';
+const CACHE_NAME = 'ts-news-v2';
 
 const CACHED_URLS = [
   './',

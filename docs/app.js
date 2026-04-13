@@ -169,7 +169,7 @@ function renderSummary(text) {
 window.triggerGenerate = async function() {
   const token = localStorage.getItem(TOKEN_KEY);
   if (!token) {
-    document.getElementById('token-modal').classList.add('visible');
+    openSettings();
     return;
   }
   await dispatchWorkflow(token);
@@ -226,18 +226,48 @@ function showLoadingScreen() {
 }
 
 // ============================================================
-// Token speichern (aus Modal)
+// Einstellungen: Token speichern / entfernen / anzeigen
 // ============================================================
 
+window.openSettings = function() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const statusEl = document.getElementById('token-status');
+  if (token) {
+    statusEl.innerHTML = '✅ <strong style="color:#4ade80">Token gespeichert</strong> — du kannst ihn hier ändern oder entfernen.';
+    document.getElementById('token-input').value = '';
+    document.getElementById('token-input').placeholder = 'Neuen Token eingeben (leer lassen = behalten)';
+  } else {
+    statusEl.innerHTML = '⚠️ <strong style="color:#fb923c">Kein Token hinterlegt</strong> — bitte einmalig eingeben.';
+    document.getElementById('token-input').value = '';
+    document.getElementById('token-input').placeholder = 'github_pat_...';
+  }
+  document.getElementById('token-modal').classList.add('visible');
+};
+
 window.saveToken = function() {
-  const token = document.getElementById('token-input').value.trim();
-  if (!token) {
+  const input = document.getElementById('token-input').value.trim();
+  const existing = localStorage.getItem(TOKEN_KEY);
+
+  if (!input && !existing) {
     alert('Bitte Token eingeben.');
     return;
   }
-  localStorage.setItem(TOKEN_KEY, token);
-  document.getElementById('token-modal').classList.remove('visible');
-  dispatchWorkflow(token);
+
+  if (input) {
+    localStorage.setItem(TOKEN_KEY, input);
+    document.getElementById('token-modal').classList.remove('visible');
+    dispatchWorkflow(input);
+  } else {
+    // Kein neuer Token eingegeben, aber alter ist noch da → einfach schließen
+    document.getElementById('token-modal').classList.remove('visible');
+  }
+};
+
+window.deleteToken = function() {
+  if (confirm('GitHub Token wirklich entfernen? Du musst ihn dann neu eingeben.')) {
+    localStorage.removeItem(TOKEN_KEY);
+    document.getElementById('token-modal').classList.remove('visible');
+  }
 };
 
 // Klick außerhalb des Modals schließt es

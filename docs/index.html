@@ -134,6 +134,17 @@
       padding: 3px 9px; border-radius: 10px;
     }
 
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    .settings-btn {
+      background: transparent; border: none;
+      color: var(--gray-subtle); font-size: 20px;
+      cursor: pointer; padding: 4px;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .settings-btn:active { color: var(--orange); }
+
     .meta-bar {
       background: var(--olive-dark);
       padding: 8px 20px;
@@ -280,7 +291,10 @@
         <div class="header-sub">Sales Engineering | KAM</div>
       </div>
     </div>
-    <div class="badge-privat">PRIVAT</div>
+    <div class="header-right">
+      <div class="badge-privat">PRIVAT</div>
+      <button class="settings-btn" onclick="openSettings()" title="Einstellungen">⚙️</button>
+    </div>
   </header>
 
   <div class="meta-bar">
@@ -305,12 +319,14 @@
   </div>
 </div>
 
-<!-- ── GitHub Token Modal ── -->
+<!-- ── Einstellungen Modal ── -->
 <div id="token-modal" role="dialog" aria-modal="true">
   <div class="modal-box">
-    <div class="modal-title">🔑 GitHub Token eingeben</div>
+    <div class="modal-title">⚙️ Einstellungen</div>
+    <div id="token-status" class="modal-text"></div>
     <div class="modal-text">
-      Einmalig nötig für den manuellen Trigger. Token erstellen unter:<br>
+      GitHub Token einmalig hinterlegen für "Briefing neu generieren".<br><br>
+      Token erstellen unter:<br>
       github.com → Settings → Developer settings →
       Personal access tokens → Fine-grained tokens<br><br>
       Berechtigung: <strong>Actions → Read &amp; Write</strong><br>
@@ -323,7 +339,13 @@
       placeholder="github_pat_..."
       autocomplete="off"
     >
-    <button class="modal-btn" onclick="saveToken()">Speichern &amp; Generieren</button>
+    <button class="modal-btn" onclick="saveToken()" style="margin-bottom:10px">
+      💾 Token speichern
+    </button>
+    <button class="modal-btn" onclick="deleteToken()"
+      style="background:transparent;border:1px solid var(--gray-subtle);color:var(--gray-subtle);margin-top:0">
+      Token entfernen
+    </button>
   </div>
 </div>
 
