@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#374039"/>
+      <stop offset="100%" style="stop-color:#252E26"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+
+  <!-- Subtle dot grid (AI / neural net suggestion) -->
+  <g opacity="0.07" fill="#D97706">
+    <circle cx="96"  cy="96"  r="4"/><circle cx="160" cy="96"  r="4"/><circle cx="224" cy="96"  r="4"/>
+    <circle cx="288" cy="96"  r="4"/><circle cx="352" cy="96"  r="4"/><circle cx="416" cy="96"  r="4"/>
+    <circle cx="96"  cy="160" r="4"/><circle cx="160" cy="160" r="4"/><circle cx="224" cy="160" r="4"/>
+    <circle cx="288" cy="160" r="4"/><circle cx="352" cy="160" r="4"/><circle cx="416" cy="160" r="4"/>
+    <circle cx="96"  cy="224" r="4"/><circle cx="160" cy="224" r="4"/><circle cx="224" cy="224" r="4"/>
+    <circle cx="288" cy="224" r="4"/><circle cx="352" cy="224" r="4"/><circle cx="416" cy="224" r="4"/>
+    <circle cx="96"  cy="288" r="4"/><circle cx="160" cy="288" r="4"/><circle cx="224" cy="288" r="4"/>
+    <circle cx="288" cy="288" r="4"/><circle cx="352" cy="288" r="4"/><circle cx="416" cy="288" r="4"/>
+    <circle cx="96"  cy="352" r="4"/><circle cx="160" cy="352" r="4"/><circle cx="224" cy="352" r="4"/>
+    <circle cx="288" cy="352" r="4"/><circle cx="352" cy="352" r="4"/><circle cx="416" cy="352" r="4"/>
+    <circle cx="96"  cy="416" r="4"/><circle cx="160" cy="416" r="4"/><circle cx="224" cy="416" r="4"/>
+    <circle cx="288" cy="416" r="4"/><circle cx="352" cy="416" r="4"/><circle cx="416" cy="416" r="4"/>
+  </g>
+
+  <!-- Gold top accent line -->
+  <rect x="64" y="112" width="384" height="3.5" rx="2" fill="#D97706" opacity="0.9"/>
+
+  <!-- "DAILY" label -->
+  <text
+    x="256" y="157"
+    text-anchor="middle"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="#D97706"
+    letter-spacing="10"
+  >DAILY</text>
+
+  <!-- Large "AI" -->
+  <text
+    x="256" y="295"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="130"
+    font-weight="700"
+    fill="#FFFFFF"
+    letter-spacing="-3"
+  >AI</text>
+
+  <!-- "NEWS" label -->
+  <text
+    x="256" y="350"
+    text-anchor="middle"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="#D97706"
+    letter-spacing="14"
+  >NEWS</text>
+
+  <!-- Gold bottom accent line -->
+  <rect x="64" y="368" width="384" height="3.5" rx="2" fill="#D97706" opacity="0.9"/>
+
+  <!-- T.S. stamp – bottom right -->
+  <rect x="354" y="412" width="94" height="62" rx="8" fill="none" stroke="#D97706" stroke-width="2" opacity="0.55"/>
+  <text
+    x="401" y="447"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-size="19"
+    font-weight="700"
+    fill="#D97706"
+    opacity="0.7"
+    letter-spacing="2"
+  >T · S ·</text>
+
+</svg>
