@@ -127,10 +127,6 @@ async function loadBriefing() {
     }) + ' Uhr';
 
     document.getElementById('meta-date').textContent = '📅 ' + dateStr;
-    document.getElementById('meta-sources').textContent =
-      (data.sources && data.sources.length)
-        ? data.sources.join(' · ')
-        : '';
 
     // Zusammenfassung rendern
     renderSummary(data.summary || '📭 Keine Daten vorhanden.');

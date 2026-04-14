@@ -148,7 +148,7 @@
     .meta-bar {
       background: var(--olive-dark);
       padding: 8px 20px;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: center; align-items: center;
       flex-wrap: wrap; gap: 4px;
     }
     .meta-bar span { color: var(--gray-light); font-size: 10px; }
@@ -299,14 +299,13 @@
 
   <div class="meta-bar">
     <span id="meta-date">Lädt...</span>
-    <span id="meta-sources"></span>
   </div>
 
   <!-- Screen 3: Ladeanimation (innerhalb App) -->
   <div id="loading-screen">
     <div class="spinner"></div>
     <div id="loading-text">
-      Briefing wird generiert…<br>Das dauert ca. 45 Sekunden.
+      Briefing wird generiert…<br>Das dauert ca. 60–90 Sekunden.
     </div>
   </div>
 
@@ -322,14 +321,18 @@
 <!-- ── Einstellungen Modal ── -->
 <div id="token-modal" role="dialog" aria-modal="true">
   <div class="modal-box">
-    <div class="modal-title">⚙️ Einstellungen</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="modal-title" style="margin-bottom:0">⚙️ Einstellungen</div>
+      <button onclick="document.getElementById('token-modal').classList.remove('visible')"
+        style="background:transparent;border:none;color:var(--gray-subtle);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;">✕</button>
+    </div>
     <div id="token-status" class="modal-text"></div>
     <div class="modal-text">
       GitHub Token einmalig hinterlegen für "Briefing neu generieren".<br><br>
       Token erstellen unter:<br>
       github.com → Settings → Developer settings →
-      Personal access tokens → Fine-grained tokens<br><br>
-      Berechtigung: <strong>Actions → Read &amp; Write</strong><br>
+      Personal access tokens → <strong>Tokens (classic)</strong><br><br>
+      Berechtigung: <strong>workflow</strong> ankreuzen<br>
       Repository: <strong>ai-news-web</strong>
     </div>
     <input
