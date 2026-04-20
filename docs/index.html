@@ -249,6 +249,46 @@
       font-size: 13px; font-weight: 700;
       cursor: pointer; font-family: inherit; width: 100%;
     }
+
+    /* ── ARCHIV ── */
+    .archive-item {
+      background: var(--olive-dark);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+    .archive-item:active { border-color: var(--orange); }
+
+    .archive-item-date {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .archive-item-preview {
+      font-size: 11px;
+      color: var(--gray-subtle);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .archive-today-badge {
+      background: var(--orange);
+      color: var(--white);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 8px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .back-btn-label { font-size: 13px; }
   </style>
 </head>
 <body>
@@ -293,6 +333,8 @@
     </div>
     <div class="header-right">
       <div class="badge-privat">PRIVAT</div>
+      <button class="settings-btn" id="archive-btn" onclick="openArchive()" title="Archiv">🗂️</button>
+      <button class="settings-btn" id="back-btn" onclick="closeArchive()" title="Zurück" style="display:none">← Zurück</button>
       <button class="settings-btn" onclick="openSettings()" title="Einstellungen">⚙️</button>
     </div>
   </header>
@@ -315,6 +357,12 @@
     <button class="generate-btn" id="generate-btn" onclick="triggerGenerate()">
       ⟳ Briefing neu generieren
     </button>
+  </div>
+
+  <!-- ── Screen: Archiv-Liste ── -->
+  <div class="content" id="archive-screen" style="display:none">
+    <div class="section-label">ARCHIV — LETZTE 7 TAGE</div>
+    <div id="archive-list"></div>
   </div>
 </div>
 
