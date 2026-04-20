@@ -12,6 +12,8 @@ const DATA_URL   = './data/latest.json';
 const PIN_KEY    = 'ts_pin_hash_v1';
 const TOKEN_KEY  = 'ts_gh_token_v1';
 const PIN_SALT   = 'ts-news-briefing-2026';
+const ARCHIVE_URL = './data/archive.json';
+let archiveCache  = null;
 
 // ============================================================
 // PIN — Hilfsfunktionen
@@ -270,6 +272,92 @@ window.deleteToken = function() {
 document.getElementById('token-modal').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('visible');
 });
+
+// ============================================================
+// Archiv
+// ============================================================
+
+window.openArchive = async function() {
+  document.getElementById('main-content').style.display   = 'none';
+  document.getElementById('archive-screen').style.display = 'block';
+  document.getElementById('archive-btn').style.display    = 'none';
+  document.getElementById('back-btn').style.display       = 'inline-block';
+
+  if (!archiveCache) {
+    try {
+      const res = await fetch(ARCHIVE_URL + '?t=' + Date.now());
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      archiveCache = await res.json();
+    } catch (e) {
+      document.getElementById('archive-list').innerHTML =
+        '<p style="color:var(--gray-subtle);font-size:13px">⚠️ Archiv konnte nicht geladen werden.</p>';
+      return;
+    }
+  }
+
+  renderArchiveList(archiveCache);
+};
+
+function renderArchiveList(entries) {
+  const container = document.getElementById('archive-list');
+  if (!entries || entries.length === 0) {
+    container.innerHTML =
+      '<p style="color:var(--gray-subtle);font-size:13px">Noch keine archivierten Briefings.</p>';
+    return;
+  }
+
+  container.innerHTML = '';
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  entries.forEach((entry, index) => {
+    const isToday = entry.date === todayStr;
+    const dateObj = new Date(entry.generated_at);
+    const dateLabel = dateObj.toLocaleDateString('de-DE', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      timeZone: 'Europe/Berlin',
+    });
+    const preview = (entry.summary || '').replace(/\n/g, ' ').slice(0, 80) + '…';
+
+    const item = document.createElement('div');
+    item.className = 'archive-item';
+    item.innerHTML = `
+      <div class="archive-item-date">
+        ${dateLabel}${isToday ? '<span class="archive-today-badge">Heute</span>' : ''}
+      </div>
+      <div class="archive-item-preview">${preview}</div>
+    `;
+    item.addEventListener('click', () => showArchiveDetail(entry));
+    container.appendChild(item);
+  });
+}
+
+function showArchiveDetail(entry) {
+  document.getElementById('archive-screen').style.display = 'none';
+  document.getElementById('main-content').style.display   = 'block';
+  document.getElementById('generate-btn').style.display   = 'none';
+
+  const dateObj  = new Date(entry.generated_at);
+  const dateStr  = dateObj.toLocaleDateString('de-DE', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    timeZone: 'Europe/Berlin',
+  }) + ', ' + dateObj.toLocaleTimeString('de-DE', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin',
+  }) + ' Uhr';
+
+  document.getElementById('meta-date').textContent = '📅 ' + dateStr;
+  renderSummary(entry.summary || '📭 Kein Inhalt vorhanden.');
+}
+
+window.closeArchive = function() {
+  document.getElementById('archive-screen').style.display = 'none';
+  document.getElementById('main-content').style.display   = 'block';
+  document.getElementById('generate-btn').style.display   = 'block';
+  document.getElementById('archive-btn').style.display    = 'inline-block';
+  document.getElementById('back-btn').style.display       = 'none';
+
+  // Aktuelles Briefing wiederherstellen
+  loadBriefing();
+};
 
 // ============================================================
 // Init
