@@ -78,8 +78,12 @@ def main():
     }
 
     if os.path.exists(archive_path):
-        with open(archive_path, "r", encoding="utf-8") as f:
-            archive = json.load(f)
+        try:
+            with open(archive_path, "r", encoding="utf-8") as f:
+                archive = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            print("   ⚠️ archive.json beschädigt – wird neu gestartet")
+            archive = []
     else:
         archive = []
 
