@@ -66,8 +66,34 @@ def main():
     os.makedirs("docs/data", exist_ok=True)
     with open("docs/data/latest.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-
     print("   ✅ docs/data/latest.json geschrieben")
+
+    # Schritt 4: Archiv aktualisieren (letzte 7 Einträge)
+    print("\n📚 Schritt 4: Archiv aktualisieren...")
+    archive_path = "docs/data/archive.json"
+    archive_entry = {
+        "date": now_mez.strftime("%Y-%m-%d"),
+        "generated_at": now_mez.isoformat(),
+        "summary": summary_text,
+    }
+
+    if os.path.exists(archive_path):
+        with open(archive_path, "r", encoding="utf-8") as f:
+            archive = json.load(f)
+    else:
+        archive = []
+
+    # Alten Eintrag desselben Tages entfernen (verhindert Duplikate bei Re-Run)
+    today_str = now_mez.strftime("%Y-%m-%d")
+    archive = [e for e in archive if e.get("date") != today_str]
+
+    archive.insert(0, archive_entry)
+    archive = archive[:7]
+
+    with open(archive_path, "w", encoding="utf-8") as f:
+        json.dump(archive, f, ensure_ascii=False, indent=2)
+    print(f"   ✅ docs/data/archive.json aktualisiert ({len(archive)} Einträge)")
+
     print("\n" + "=" * 50)
     print("✅ AI News Web Generator abgeschlossen!")
 
